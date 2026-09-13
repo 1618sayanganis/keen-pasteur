@@ -597,32 +597,173 @@ function showToast(message) {
   }, 3200);
 }
 
-// 9. Photo Lightbox Modal & Load More
+// 9. Photo Lightbox Modal (dengan Tombol Kanan-Kiri & Touch Swipe Gesture)
 function initGalleryModal() {
   const modal = document.getElementById('gallery-modal');
   const modalImg = document.getElementById('modal-image');
   const closeBtn = document.getElementById('modal-close-btn');
+  const prevBtn = document.getElementById('modal-prev-btn');
+  const nextBtn = document.getElementById('modal-next-btn');
+  const counterEl = document.getElementById('modal-counter');
+  const imgWrapper = document.getElementById('modal-image-wrapper');
 
   if (!modal || !modalImg) return;
 
-  // Event delegation to support dynamically loaded photos
+  let currentGalleryList = [];
+  let currentIndex = 0;
+
+  function updateGalleryList() {
+    // Ambil semua thumbnail yang saat ini tampil di halaman
+    const thumbs = Array.from(document.querySelectorAll('.gallery-thumb'));
+    currentGalleryList = thumbs.map(el => el.getAttribute('data-fullsrc') || el.src);
+  }
+
+  function showPhoto(index, direction = 0) {
+    if (currentGalleryList.length === 0) updateGalleryList();
+    if (currentGalleryList.length === 0) return;
+
+    if (index < 0) {
+      index = currentGalleryList.length - 1;
+    } else if (index >= currentGalleryList.length) {
+      index = 0;
+    }
+
+    currentIndex = index;
+
+    // Animasi transisi swipe / slide jika ada arah gerakan
+    if (direction !== 0) {
+      modalImg.style.transition = 'transform 0.18s ease-out, opacity 0.18s ease-out';
+      modalImg.style.transform = `translateX(${direction > 0 ? '-35px' : '35px'}) scale(0.96)`;
+      modalImg.style.opacity = '0.3';
+
+      setTimeout(() => {
+        modalImg.src = currentGalleryList[currentIndex];
+        modalImg.style.transform = `translateX(${direction > 0 ? '35px' : '-35px'}) scale(0.96)`;
+
+        setTimeout(() => {
+          modalImg.style.transform = 'translateX(0) scale(1)';
+          modalImg.style.opacity = '1';
+        }, 30);
+      }, 180);
+    } else {
+      modalImg.style.transition = 'opacity 0.2s ease-out';
+      modalImg.style.transform = 'translateX(0) scale(1)';
+      modalImg.src = currentGalleryList[currentIndex];
+      modalImg.style.opacity = '1';
+    }
+
+    if (counterEl) {
+      counterEl.textContent = `${currentIndex + 1} / ${currentGalleryList.length}`;
+    }
+  }
+
+  // Buka modal saat thumbnail diklik
   document.addEventListener('click', (e) => {
     const thumb = e.target.closest('.gallery-thumb');
     if (thumb) {
+      updateGalleryList();
       const src = thumb.getAttribute('data-fullsrc') || thumb.src;
-      modalImg.src = src;
+      const foundIdx = currentGalleryList.indexOf(src);
+      currentIndex = foundIdx !== -1 ? foundIdx : 0;
+      showPhoto(currentIndex, 0);
       modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
   });
 
+  // Tombol navigasi
+  if (prevBtn) {
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showPhoto(currentIndex - 1, -1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showPhoto(currentIndex + 1, 1);
+    });
+  }
+
+  // Tutup modal
   const closeModal = () => {
     modal.classList.remove('active');
     modalImg.src = '';
+    modalImg.style.transform = 'none';
+    document.body.style.overflow = 'auto';
   };
 
   if (closeBtn) closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
+    // Tutup jika klik area background luar gambar dan bukan tombol navigasi
+    if (e.target === modal || e.target === imgWrapper) {
+      closeModal();
+    }
+  });
+
+  // Keyboard navigation (Panah Kiri, Kanan, Escape)
+  window.addEventListener('keydown', (e) => {
+    if (!modal.classList.contains('active')) return;
+    if (e.key === 'ArrowLeft') {
+      showPhoto(currentIndex - 1, -1);
+    } else if (e.key === 'ArrowRight') {
+      showPhoto(currentIndex + 1, 1);
+    } else if (e.key === 'Escape') {
+      closeModal();
+    }
+  });
+
+  // Touch Swipe Gesture Handling (Mobile / Jari)
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchMoveX = 0;
+  let isSwiping = false;
+
+  const targetArea = imgWrapper || modal;
+
+  targetArea.addEventListener('touchstart', (e) => {
+    if (!modal.classList.contains('active')) return;
+    if (e.touches.length === 1) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchMoveX = touchStartX;
+      isSwiping = true;
+      modalImg.style.transition = 'none';
+    }
+  }, { passive: true });
+
+  targetArea.addEventListener('touchmove', (e) => {
+    if (!isSwiping || e.touches.length !== 1) return;
+    touchMoveX = e.touches[0].clientX;
+    const diffX = touchMoveX - touchStartX;
+    const diffY = e.touches[0].clientY - touchStartY;
+
+    // Jika geser horizontal lebih dominan daripada vertikal
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      modalImg.style.transform = `translateX(${diffX * 0.75}px) scale(0.98)`;
+      modalImg.style.opacity = String(Math.max(0.4, 1 - Math.abs(diffX) / 300));
+    }
+  }, { passive: true });
+
+  targetArea.addEventListener('touchend', (e) => {
+    if (!isSwiping) return;
+    isSwiping = false;
+    const diffX = touchMoveX - touchStartX;
+    const swipeThreshold = 45; // threshold pixel swipe
+
+    if (diffX > swipeThreshold) {
+      // Swipe ke kanan -> Foto sebelumnya
+      showPhoto(currentIndex - 1, -1);
+    } else if (diffX < -swipeThreshold) {
+      // Swipe ke kiri -> Foto berikutnya
+      showPhoto(currentIndex + 1, 1);
+    } else {
+      // Batal swipe, kembalikan posisi awal
+      modalImg.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
+      modalImg.style.transform = 'translateX(0) scale(1)';
+      modalImg.style.opacity = '1';
+    }
   });
 
   // Setup Load More Photos Button

@@ -1,0 +1,7 @@
+raw_photos/
+assets/bg/
+.git/
+compress.py
+live_compress.py
+compress_all.py
+watcher.py

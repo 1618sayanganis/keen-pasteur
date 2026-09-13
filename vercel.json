@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/wishes/:id",
+      "destination": "/api/wishes?id=:id"
+    },
+    {
+      "source": "/api/wishes",
+      "destination": "/api/wishes"
+    }
+  ]
+}

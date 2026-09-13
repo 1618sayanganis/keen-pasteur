@@ -260,20 +260,28 @@ body {
 #gallery-modal {
   position: fixed;
   inset: 0;
-  background: rgba(15, 12, 10, 0.92);
-  z-index: 60;
+  background: rgba(10, 8, 7, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 80;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 #gallery-modal.active {
   opacity: 1;
   pointer-events: auto;
+}
+
+#modal-image {
+  will-change: transform, opacity;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 /* Subtle background textures */

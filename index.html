@@ -552,12 +552,36 @@
   </main>
 
   <!-- ==================== PHOTO LIGHTBOX MODAL ==================== -->
-  <div id="gallery-modal">
-    <div class="relative max-w-2xl w-full p-2">
-      <button id="modal-close-btn" class="absolute -top-10 right-2 text-white/90 hover:text-white transition">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-      </button>
-      <img id="modal-image" src="" alt="Prewedding Fullscreen" class="w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20">
+  <div id="gallery-modal" class="select-none">
+    <!-- Close Button -->
+    <button id="modal-close-btn" class="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 rounded-full bg-black/50 text-white/90 hover:text-white hover:bg-black/75 flex items-center justify-center transition z-20 backdrop-blur-sm border border-white/20">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+
+    <!-- Photo Counter Indicator -->
+    <div id="modal-counter" class="absolute top-4 left-4 md:top-6 md:left-6 px-3.5 py-1.5 rounded-full bg-black/50 text-white/90 text-xs font-semibold tracking-wider backdrop-blur-sm border border-white/20 z-20 font-mono">
+      1 / 8
+    </div>
+
+    <!-- Navigation Previous Button -->
+    <button id="modal-prev-btn" class="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 w-11 h-11 md:w-13 md:h-13 rounded-full bg-black/50 text-white/90 hover:text-white hover:bg-black/75 flex items-center justify-center transition z-20 backdrop-blur-sm border border-white/20 active:scale-95 shadow-lg">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+    </button>
+
+    <!-- Image Container with Swipe Support -->
+    <div id="modal-image-wrapper" class="relative max-w-2xl w-full p-2 flex items-center justify-center touch-pan-y">
+      <img id="modal-image" src="" alt="Prewedding Fullscreen" class="w-full max-h-[82vh] object-contain rounded-2xl shadow-2xl border border-white/20 transition-transform duration-200 ease-out">
+    </div>
+
+    <!-- Navigation Next Button -->
+    <button id="modal-next-btn" class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 w-11 h-11 md:w-13 md:h-13 rounded-full bg-black/50 text-white/90 hover:text-white hover:bg-black/75 flex items-center justify-center transition z-20 backdrop-blur-sm border border-white/20 active:scale-95 shadow-lg">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+    </button>
+
+    <!-- Swipe Hint for Mobile -->
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-stone-400/80 text-[11px] tracking-wider pointer-events-none md:hidden flex items-center gap-1.5">
+      <svg class="w-4 h-4 text-gold/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+      <span>Geser (swipe) untuk ganti foto</span>
     </div>
   </div>
 
