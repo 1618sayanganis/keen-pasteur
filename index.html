@@ -350,12 +350,20 @@
         <div class="gold-divider"></div>
       </div>
 
-      <!-- Vertical Timeline -->
-      <div class="relative border-l-2 border-gold/40 ml-4 md:ml-32 space-y-10">
+      <!-- Vertical Timeline with Animated Progress Line -->
+      <div id="timeline-track" class="relative ml-4 md:ml-32 space-y-12">
+        <!-- Background Static Track Line -->
+        <div class="absolute left-0 top-2 bottom-4 w-[2px] bg-stone-200/80 -translate-x-1/2"></div>
+        <!-- Active Glowing Progress Line (mengalir dari poin ke poin) -->
+        <div id="timeline-progress-line" class="absolute left-0 top-2 w-[2px] bg-gradient-to-b from-gold via-amber-400 to-gold -translate-x-1/2 transition-all duration-700 ease-out shadow-[0_0_8px_rgba(197,155,39,0.5)]" style="height: 0px;"></div>
+
         <!-- Story 1 -->
-        <div class="relative pl-8 reveal-on-scroll">
-          <div class="absolute -left-[9px] top-1 timeline-dot"></div>
-          <span class="text-xs font-bold text-gold-dark uppercase tracking-wider">Maret 2021</span>
+        <div class="timeline-item relative pl-8 reveal-on-scroll" data-step="1">
+          <div class="timeline-dot-wrapper absolute -left-[9px] top-1 z-10">
+            <div class="timeline-dot"></div>
+            <div class="timeline-pulse"></div>
+          </div>
+          <span class="text-xs font-bold text-gold-dark uppercase tracking-wider block mb-0.5">Maret 2021</span>
           <h4 class="font-cinzel text-lg font-bold text-stone-800 mt-0.5">Pertemuan Pertama di Persekutuan Doa</h4>
           <p class="text-sm text-stone-600 mt-1.5 leading-relaxed">
             Tuhan mempertemukan kami dalam pelayanan persekutuan pemuda gereja. Dari obrolan hangat seputar firman dan visi hidup, benih kekaguman mulai tumbuh di hati masing-masing.
@@ -363,9 +371,12 @@
         </div>
 
         <!-- Story 2 -->
-        <div class="relative pl-8 reveal-on-scroll">
-          <div class="absolute -left-[9px] top-1 timeline-dot"></div>
-          <span class="text-xs font-bold text-gold-dark uppercase tracking-wider">Desember 2022</span>
+        <div class="timeline-item relative pl-8 reveal-on-scroll" data-step="2">
+          <div class="timeline-dot-wrapper absolute -left-[9px] top-1 z-10">
+            <div class="timeline-dot"></div>
+            <div class="timeline-pulse"></div>
+          </div>
+          <span class="text-xs font-bold text-gold-dark uppercase tracking-wider block mb-0.5">Desember 2022</span>
           <h4 class="font-cinzel text-lg font-bold text-stone-800 mt-0.5">Berjalan Bersama dalam Komitmen</h4>
           <p class="text-sm text-stone-600 mt-1.5 leading-relaxed">
             Dengan restu orang tua dan doa bersama, kami memutuskan untuk memulai hubungan pacaran berlandaskan firman Tuhan, belajar saling melengkapi dan menopang dalam setiap musim hidup.
@@ -373,9 +384,12 @@
         </div>
 
         <!-- Story 3 -->
-        <div class="relative pl-8 reveal-on-scroll">
-          <div class="absolute -left-[9px] top-1 timeline-dot"></div>
-          <span class="text-xs font-bold text-gold-dark uppercase tracking-wider">Januari 2026</span>
+        <div class="timeline-item relative pl-8 reveal-on-scroll" data-step="3">
+          <div class="timeline-dot-wrapper absolute -left-[9px] top-1 z-10">
+            <div class="timeline-dot"></div>
+            <div class="timeline-pulse"></div>
+          </div>
+          <span class="text-xs font-bold text-gold-dark uppercase tracking-wider block mb-0.5">Januari 2026</span>
           <h4 class="font-cinzel text-lg font-bold text-stone-800 mt-0.5">She Said "Yes!" &amp; Lamaran</h4>
           <p class="text-sm text-stone-600 mt-1.5 leading-relaxed">
             Di bawah indahnya sunset dan diiringi doa syukur, Kevin berlutut melamar Isabela. Kini, dengan sukacita penuh, kami melangkah menuju janji suci pernikahan kudus di hadapan Allah dan jemaat-Nya.

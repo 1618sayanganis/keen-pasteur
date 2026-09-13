@@ -264,7 +264,7 @@ function initCountdownTimer() {
   setInterval(updateCountdown, 1000);
 }
 
-// 6. Intersection Observer for Scroll Animations
+// 6. Intersection Observer for Scroll Animations & Timeline Progression
 function initScrollAnimations() {
   const elements = document.querySelectorAll('.reveal-on-scroll');
 
@@ -280,6 +280,47 @@ function initScrollAnimations() {
   });
 
   elements.forEach(el => observer.observe(el));
+
+  // Initialize Timeline Flow Animation
+  initTimelineFlow();
+}
+
+function initTimelineFlow() {
+  const track = document.getElementById('timeline-track');
+  const progressLine = document.getElementById('timeline-progress-line');
+  const items = document.querySelectorAll('.timeline-item');
+
+  if (!track || !progressLine || items.length === 0) return;
+
+  function updateTimelineProgress() {
+    const trackRect = track.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+
+    // Hitung posisi scroll relatif terhadap track timeline
+    const startOffset = viewportHeight * 0.75;
+    const scrollDistance = startOffset - trackRect.top;
+    const totalTrackHeight = trackRect.height;
+
+    // Progress dari 0 hingga tinggi maksimal track
+    let activeHeight = Math.max(0, Math.min(totalTrackHeight, scrollDistance));
+    progressLine.style.height = `${activeHeight}px`;
+
+    // Cek setiap poin timeline untuk aktivasi animasi
+    items.forEach(item => {
+      const itemRect = item.getBoundingClientRect();
+      const dotTop = itemRect.top + 6; // posisi dot
+
+      if (dotTop <= viewportHeight * 0.72) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateTimelineProgress, { passive: true });
+  window.addEventListener('resize', updateTimelineProgress);
+  updateTimelineProgress();
 }
 
 // 7. Interactive Guestbook / RSVP with LocalStorage
