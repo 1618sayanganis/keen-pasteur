@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Wedding of Kevin & Isabela | Undangan Pernikahan</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Google Sans"', 'sans-serif'],
+            googlesans: ['"Google Sans"', 'sans-serif'],
+          },
+          colors: {
+            gold: {
+              light: '#dfba73',
+              DEFAULT: '#c59b27',
+              dark: '#997316',
+            },
+            warmivory: '#fdfbf7',
+            blush: '#e8d0cb',
+            sage: '#7d8f78',
+            deepwood: '#2b2520'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom CSS Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-subtle-pattern text-stone-800 antialiased selection:bg-gold/20 selection:text-gold-dark relative">
+
+  <!-- Fixed Scroll Motion Background Canvas -->
+  <div id="scroll-bg-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-0 transition-opacity duration-1000">
+    <canvas id="scroll-bg-canvas" class="w-full h-full object-cover"></canvas>
+    <!-- Soft Warm Overlay for readable text and sacred aesthetic -->
+    <div class="absolute inset-0 bg-[#fdfbf7]/65 backdrop-blur-[1px]"></div>
+  </div>
+
+  <!-- Floating Petals Canvas -->
+  <canvas id="petals-canvas"></canvas>
+
+  <!-- Background Music Element (Royalty-free romantic piano melody) -->
+  <audio id="bg-audio" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-wedding-piano-112191.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- Floating Music Toggle Controller -->
+  <button id="music-toggle-btn" class="music-control-btn" title="Putar / Hentikan Musik">
+    <svg id="music-icon-play" class="w-6 h-6 text-gold hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <svg id="music-icon-pause" class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+    </svg>
+  </button>
+
+  <!-- ==================== 1. COVER / ENVELOPE MODAL OVERLAY ==================== -->
+  <div id="cover-overlay" class="p-6">
+    <div class="max-w-md w-full glass-card p-8 md:p-10 text-center relative border-2 border-gold/40 shadow-2xl rounded-3xl overflow-hidden">
+      <!-- Cross Icon Decoration -->
+      <div class="flex justify-center mb-3">
+        <svg class="w-8 h-8 text-gold drop-shadow-sm" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M11 2h2v6h6v2h-6v12h-2V10H5V8h6V2z"/>
+        </svg>
+      </div>
+
+      <p class="font-cinzel tracking-[0.25em] text-xs uppercase text-gold font-semibold mb-2">The Holy Matrimony</p>
+      <h1 class="font-cinzel text-3xl md:text-4xl font-bold tracking-wider text-stone-800 mb-1">Kevin &amp; Isabela</h1>
+      <p class="font-script text-3xl text-gold-dark mb-6">We are getting married!</p>
+
+      <!-- Envelope / Wax Seal Centerpiece -->
+      <div class="my-8 flex flex-col items-center justify-center">
+        <div class="wax-seal" title="Klik untuk membuka">
+          <span class="font-cinzel text-xl font-bold tracking-tighter">K&amp;I</span>
+        </div>
+        <p class="text-xs text-stone-400 mt-2 font-medium tracking-wide">SENTUH SEGEL UNTUK MEMBUKA</p>
+      </div>
+
+      <!-- Guest Personalization -->
+      <div class="bg-stone-50/80 rounded-2xl p-4 border border-stone-200/60 mb-6">
+        <p class="text-xs text-stone-500 uppercase tracking-widest mb-1">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+        <h3 id="guest-recipient-name" class="font-playfair font-bold text-xl text-stone-800">Tamu Undangan Terhormat</h3>
+        <p class="text-[11px] text-stone-400 mt-1 italic">*Mohon maaf bila ada kesalahan penulisan nama/gelar</p>
+      </div>
+
+      <button id="btn-open-invitation" class="w-full py-3.5 px-6 bg-gradient-to-r from-gold to-gold-dark text-white rounded-full font-medium tracking-wide shadow-lg shadow-gold/25 hover:shadow-gold/40 transform hover:-translate-y-0.5 active:translate-y-0 transition duration-300 flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+        <span>Buka Undangan</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+  <main class="max-w-xl mx-auto min-h-screen relative shadow-2xl bg-[#fffefb]/85 backdrop-blur-[2px] border-x border-stone-200/50">
+
+    <!-- ==================== 2. HERO SECTION ==================== -->
+    <section id="hero-section" class="relative min-h-[90vh] flex flex-col items-center justify-between text-center px-6 py-16 overflow-hidden">
+      <!-- Background floral/engagement photo ornament -->
+      <div class="absolute inset-0 opacity-10 bg-cover bg-center pointer-events-none" style="background-image: url('assets/images/DSC00155.jpg');"></div>
+      
+      <div class="reveal-on-scroll relative z-10 pt-4">
+        <!-- Minimalist Cross -->
+        <div class="inline-flex p-3 rounded-full bg-gold/10 text-gold mb-4 border border-gold/30">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11 2h2v6h6v2h-6v12h-2V10H5V8h6V2z"/>
+          </svg>
+        </div>
+        <p class="font-cinzel tracking-[0.3em] uppercase text-xs text-gold-dark font-semibold">Pemberkatan Pernikahan Kudus</p>
+      </div>
+
+      <div class="reveal-on-scroll relative z-10 my-8">
+        <h1 class="font-cinzel text-5xl md:text-6xl font-bold tracking-tight text-stone-800 leading-tight">
+          Kevin <br>
+          <span class="font-script text-4xl md:text-5xl text-gold font-normal block my-1">&amp;</span>
+          Isabela
+        </h1>
+        <div class="gold-divider">
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+          </svg>
+        </div>
+        <p class="font-cinzel text-stone-600 tracking-widest text-sm font-semibold uppercase">Sabtu, 24 Oktober 2026</p>
+      </div>
+
+      <!-- Hero Photo Card with Gold Border -->
+      <div class="reveal-on-scroll relative z-10 w-full max-w-xs">
+        <div class="photo-frame">
+          <div class="photo-inner aspect-[3/4] relative">
+            <img src="assets/images/DSC00178.jpg" alt="Kevin & Isabela" class="w-full h-full object-cover object-center">
+            <div class="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent flex items-end justify-center pb-4">
+              <span class="text-white/90 font-script text-2xl">Together in God's Grace</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll down indicator -->
+      <div class="relative z-10 mt-8 animate-bounce text-stone-400 flex flex-col items-center gap-1">
+        <span class="text-[10px] tracking-widest uppercase">Gulir ke bawah</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ==================== 3. AYAT ALKITAB (HOLY BIBLE VERSE) ==================== -->
+    <section id="section-firman-tuhan" class="py-16 px-6 relative bg-gradient-to-b from-[#fffefb]/90 via-[#faf6ee]/85 to-[#fffefb]/85">
+      <div class="glass-card p-8 text-center reveal-on-scroll border border-gold/30 shadow-md relative">
+        <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-[#fffefb] px-4 py-1 rounded-full border border-gold/40 shadow-sm flex items-center gap-1.5 text-gold">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M11 2h2v6h6v2h-6v12h-2V10H5V8h6V2z"/></svg>
+          <span class="font-cinzel text-xs font-bold tracking-widest">FIRMAN TUHAN</span>
+        </div>
+
+        <blockquote class="italic text-stone-700 leading-relaxed font-playfair text-base md:text-lg mb-4 mt-2">
+          &ldquo;Kasih itu sabar; kasih itu murah hati; ia tidak cemburu. Ia tidak memegahkan diri dan tidak sombong. Ia tidak melakukan yang tidak sopan dan tidak mencari keuntungan diri sendiri. Ia menutupi segala sesuatu, percaya segala sesuatu, mengharapkan segala sesuatu, sabar menanggung segala sesuatu. Kasih tidak berkesudahan.&rdquo;
+        </blockquote>
+        <div class="gold-divider"></div>
+        <cite class="font-cinzel text-xs tracking-wider text-gold-dark font-bold not-italic">
+          — 1 KORINTUS 13:4, 7-8a —
+        </cite>
+
+        <p class="text-xs text-stone-500 mt-6 leading-relaxed max-w-sm mx-auto">
+          Atas Kasih dan Karunia Tuhan Yesus Kristus, dengan penuh rasa syukur kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri dan memberikan doa restu pada pernikahan kudus kami:
+        </p>
+      </div>
+    </section>
+
+    <!-- ==================== 4. PROFIL MEMPELAI (BRIDE & GROOM) ==================== -->
+    <section class="py-16 px-6">
+      <div class="text-center mb-12 reveal-on-scroll">
+        <p class="font-cinzel text-xs uppercase tracking-widest text-gold font-semibold">Dua Hati Disatukan Dalam Kristus</p>
+        <h2 class="font-cinzel text-3xl font-bold text-stone-800 mt-1">Mempelai Bahagia</h2>
+        <div class="gold-divider"></div>
+      </div>
+
+      <!-- Groom -->
+      <div class="flex flex-col items-center text-center reveal-on-scroll mb-14">
+        <div class="w-44 h-44 rounded-full p-1.5 bg-gradient-to-tr from-gold to-amber-200 shadow-xl mb-5">
+          <img src="assets/images/DSC00169.jpg" alt="Kevin Pratama" class="w-full h-full object-cover rounded-full">
+        </div>
+        <h3 class="font-cinzel text-2xl font-bold text-stone-800">Kevin Pratama, S.T.</h3>
+        <p class="font-script text-2xl text-gold-dark my-1">Putra dari</p>
+        <p class="text-stone-600 text-sm font-medium">Bpk. Ir. Andreas Pratama &amp; Ibu Maria Christina</p>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs text-stone-500 mt-3 hover:text-gold transition">
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          <span>@kevinpratama</span>
+        </a>
+      </div>
+
+      <!-- Ampersand with heart icon -->
+      <div class="text-center my-6 reveal-on-scroll">
+        <span class="font-script text-5xl text-gold font-normal">&amp;</span>
+      </div>
+
+      <!-- Bride -->
+      <div class="flex flex-col items-center text-center reveal-on-scroll">
+        <div class="w-44 h-44 rounded-full p-1.5 bg-gradient-to-tr from-gold to-rose-200 shadow-xl mb-5">
+          <img src="assets/images/DSC00183.jpg" alt="Isabela Natasha" class="w-full h-full object-cover rounded-full">
+        </div>
+        <h3 class="font-cinzel text-2xl font-bold text-stone-800">Isabela Natasha, S.E.</h3>
+        <p class="font-script text-2xl text-gold-dark my-1">Putri dari</p>
+        <p class="text-stone-600 text-sm font-medium">Bpk. Thomas Wijaya &amp; Ibu Elizabeth Grace</p>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs text-stone-500 mt-3 hover:text-gold transition">
+          <svg class="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          <span>@isabelanatasha</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==================== 5. COUNTDOWN TIMER ==================== -->
+    <section class="py-14 px-6 bg-[#faf6ee] text-center">
+      <div class="reveal-on-scroll max-w-md mx-auto">
+        <p class="font-cinzel text-xs uppercase tracking-widest text-gold font-semibold">Menghitung Hari Bahagia</p>
+        <h2 class="font-cinzel text-2xl font-bold text-stone-800 mt-1">Hari Penyatuan Janji Suci</h2>
+        <div class="gold-divider"></div>
+
+        <div class="grid grid-cols-4 gap-3 my-8">
+          <div class="glass-card p-3 rounded-2xl shadow-sm border border-gold/30">
+            <span id="count-days" class="block font-cinzel text-2xl md:text-3xl font-bold text-stone-800">00</span>
+            <span class="text-[10px] uppercase tracking-wider text-stone-500 font-medium">Hari</span>
+          </div>
+          <div class="glass-card p-3 rounded-2xl shadow-sm border border-gold/30">
+            <span id="count-hours" class="block font-cinzel text-2xl md:text-3xl font-bold text-stone-800">00</span>
+            <span class="text-[10px] uppercase tracking-wider text-stone-500 font-medium">Jam</span>
+          </div>
+          <div class="glass-card p-3 rounded-2xl shadow-sm border border-gold/30">
+            <span id="count-minutes" class="block font-cinzel text-2xl md:text-3xl font-bold text-stone-800">00</span>
+            <span class="text-[10px] uppercase tracking-wider text-stone-500 font-medium">Menit</span>
+          </div>
+          <div class="glass-card p-3 rounded-2xl shadow-sm border border-gold/30">
+            <span id="count-seconds" class="block font-cinzel text-2xl md:text-3xl font-bold text-gold-dark">00</span>
+            <span class="text-[10px] uppercase tracking-wider text-stone-500 font-medium">Detik</span>
+          </div>
+        </div>
+
+        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Holy+Matrimony+Kevin+%26+Isabela&dates=20261024T020000Z/20261024T080000Z&details=Pernikahan+Kudus+Kevin+dan+Isabela&location=Gereja+Katedral+Jakarta" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white border border-gold/40 text-xs font-semibold tracking-wider text-stone-700 shadow-sm hover:bg-gold/10 transition">
+          <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <span>Simpan ke Google Calendar</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ==================== 6. DETAIL RANGKAIAN ACARA ==================== -->
+    <section class="py-16 px-6">
+      <div class="text-center mb-12 reveal-on-scroll">
+        <p class="font-cinzel text-xs uppercase tracking-widest text-gold font-semibold">Rangkaian Acara</p>
+        <h2 class="font-cinzel text-3xl font-bold text-stone-800 mt-1">Waktu &amp; Lokasi</h2>
+        <div class="gold-divider"></div>
+      </div>
+
+      <div class="space-y-8">
+        <!-- Event 1: Pemberkatan Kudus -->
+        <div class="glass-card p-6 md:p-8 reveal-on-scroll border border-gold/30 rounded-3xl text-center relative overflow-hidden">
+          <div class="w-12 h-12 rounded-full bg-gold/15 text-gold flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11 2h2v6h6v2h-6v12h-2V10H5V8h6V2z"/>
+            </svg>
+          </div>
+          <h3 class="font-cinzel text-2xl font-bold text-stone-800">Pemberkatan Kudus</h3>
+          <p class="font-playfair italic text-gold-dark text-sm mb-4">Holy Matrimony Service</p>
+
+          <div class="space-y-2 text-stone-600 text-sm mb-6">
+            <p class="font-semibold text-stone-800 flex items-center justify-center gap-2">
+              <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              Sabtu, 24 Oktober 2026
+            </p>
+            <p class="flex items-center justify-center gap-2">
+              <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              Pukul 09.00 - 11.00 WIB
+            </p>
+            <div class="pt-2">
+              <p class="font-semibold text-stone-800">Gereja Katedral Jakarta</p>
+              <p class="text-xs text-stone-500">Jl. Katedral No.7B, Ps. Baru, Sawah Besar, Jakarta Pusat</p>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="https://maps.google.com/?q=Gereja+Katedral+Jakarta" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-full bg-stone-800 text-white text-xs font-semibold tracking-wider hover:bg-stone-900 transition flex items-center justify-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              <span>Petunjuk Google Maps</span>
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-full border border-red-500 text-red-600 bg-red-50/50 text-xs font-semibold tracking-wider hover:bg-red-100 transition flex items-center justify-center gap-1.5">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+              <span>Live Streaming YouTube</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Event 2: Resepsi Pernikahan -->
+        <div class="glass-card p-6 md:p-8 reveal-on-scroll border border-gold/30 rounded-3xl text-center relative overflow-hidden">
+          <div class="w-12 h-12 rounded-full bg-gold/15 text-gold flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h10z"></path>
+            </svg>
+          </div>
+          <h3 class="font-cinzel text-2xl font-bold text-stone-800">Resepsi Pernikahan</h3>
+          <p class="font-playfair italic text-gold-dark text-sm mb-4">Wedding Celebration &amp; Dinner</p>
+
+          <div class="space-y-2 text-stone-600 text-sm mb-6">
+            <p class="font-semibold text-stone-800 flex items-center justify-center gap-2">
+              <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              Sabtu, 24 Oktober 2026
+            </p>
+            <p class="flex items-center justify-center gap-2">
+              <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              Pukul 18.30 - 21.30 WIB
+            </p>
+            <div class="pt-2">
+              <p class="font-semibold text-stone-800">The Dharmawangsa Hotel Jakarta</p>
+              <p class="text-xs text-stone-500">Grand Ballroom, Jl. Brawijaya Raya No.26, Kebayoran Baru, Jakarta Selatan</p>
+            </div>
+          </div>
+
+          <div class="flex justify-center">
+            <a href="https://maps.google.com/?q=The+Dharmawangsa+Jakarta" target="_blank" rel="noopener noreferrer" class="px-6 py-2.5 rounded-full bg-stone-800 text-white text-xs font-semibold tracking-wider hover:bg-stone-900 transition flex items-center justify-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              <span>Buka Lokasi Resepsi</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 7. LOVE STORY TIMELINE ==================== -->
+    <section class="py-16 px-6 bg-[#faf6ee]">
+      <div class="text-center mb-12 reveal-on-scroll">
+        <p class="font-cinzel text-xs uppercase tracking-widest text-gold font-semibold">Jejak Langkah Kami</p>
+        <h2 class="font-cinzel text-3xl font-bold text-stone-800 mt-1">Kisah Kasih Kami</h2>
+        <div class="gold-divider"></div>
+      </div>
+
+      <!-- Vertical Timeline -->
+      <div class="relative border-l-2 border-gold/40 ml-4 md:ml-32 space-y-10">
+        <!-- Story 1 -->
+        <div class="relative pl-8 reveal-on-scroll">
+          <div class="absolute -left-[9px] top-1 timeline-dot"></div>
+          <span class="text-xs font-bold text-gold-dark uppercase tracking-wider">Maret 2021</span>
+          <h4 class="font-cinzel text-lg font-bold text-stone-800 mt-0.5">Pertemuan Pertama di Persekutuan Doa</h4>
+          <p class="text-sm text-stone-600 mt-1.5 leading-relaxed">
+            Tuhan mempertemukan kami dalam pelayanan persekutuan pemuda gereja. Dari obrolan hangat seputar firman dan visi hidup, benih kekaguman mulai tumbuh di hati masing-masing.
+          </p>
+        </div>
+
+        <!-- Story 2 -->
+        <div class="relative pl-8 reveal-on-scroll">
+          <div class="absolute -left-[9px] top-1 timeline-dot"></div>
+          <span class="text-xs font-bold text-gold-dark uppercase tracking-wider">Desember 2022</span>
+          <h4 class="font-cinzel text-lg font-bold text-stone-800 mt-0.5">Berjalan Bersama dalam Komitmen</h4>
+          <p class="text-sm text-stone-600 mt-1.5 leading-relaxed">
+            Dengan restu orang tua dan doa bersama, kami memutuskan untuk memulai hubungan pacaran berlandaskan firman Tuhan, belajar saling melengkapi dan menopang dalam setiap musim hidup.
+          </p>
+        </div>
+
+        <!-- Story 3 -->
+        <div class="relative pl-8 reveal-on-scroll">
+          <div class="absolute -left-[9px] top-1 timeline-dot"></div>
+          <span class="text-xs font-bold text-gold-dark uppercase tracking-wider">Januari 2026</span>
+          <h4 class="font-cinzel text-lg font-bold text-stone-800 mt-0.5">She Said "Yes!" &amp; Lamaran</h4>
+          <p class="text-sm text-stone-600 mt-1.5 leading-relaxed">
+            Di bawah indahnya sunset dan diiringi doa syukur, Kevin berlutut melamar Isabela. Kini, dengan sukacita penuh, kami melangkah menuju janji suci pernikahan kudus di hadapan Allah dan jemaat-Nya.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 8. GALERI FOTO PREWEDDING ==================== -->
+    <section class="py-16 px-6">
+      <div class="text-center mb-12 reveal-on-scroll">
+        <p class="font-cinzel text-xs uppercase tracking-widest text-gold font-semibold">Galeri Bahagia</p>
+        <h2 class="font-cinzel text-3xl font-bold text-stone-800 mt-1">Momen Indah Kami</h2>
+        <div class="gold-divider"></div>
+        <p class="text-xs text-stone-500 max-w-sm mx-auto">Sentuh foto untuk melihat tampilan penuh</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 md:gap-4 reveal-on-scroll" id="photo-gallery-grid">
+        <div class="overflow-hidden rounded-2xl border border-gold/20 shadow-sm cursor-pointer aspect-square group">
+          <img src="assets/images/DSC00155.jpg" alt="Prewedding 1" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 gallery-thumb">
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-gold/20 shadow-sm cursor-pointer aspect-[3/4] group row-span-2">
+          <img src="assets/images/DSC00180.jpg" alt="Prewedding 2" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 gallery-thumb">
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-gold/20 shadow-sm cursor-pointer aspect-[3/4] group row-span-2">
+          <img src="assets/images/DSC00194.jpg" alt="Prewedding 3" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 gallery-thumb">
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-gold/20 shadow-sm cursor-pointer aspect-square group">
+          <img src="assets/images/DSC00160.jpg" alt="Prewedding 4" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 gallery-thumb">
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-gold/20 shadow-sm cursor-pointer aspect-square group">
+          <img src="assets/images/DSC00202.jpg" alt="Prewedding 5" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 gallery-thumb">
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-gold/20 shadow-sm cursor-pointer aspect-square group">
+          <img src="assets/images/DSC00241.jpg" alt="Prewedding 6" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 gallery-thumb">
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-gold/20 shadow-sm cursor-pointer aspect-[3/4] group row-span-2">
+          <img src="assets/images/DSC00309.jpg" alt="Prewedding 7" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 gallery-thumb">
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-gold/20 shadow-sm cursor-pointer aspect-square group">
+          <img src="assets/images/DSC00268.jpg" alt="Prewedding 8" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 gallery-thumb">
+        </div>
+      </div>
+
+      <!-- Extra Gallery Dynamic Container -->
+      <div id="extra-gallery-grid" class="grid grid-cols-2 gap-3 md:gap-4 mt-3 md:mt-4 hidden"></div>
+
+      <div class="text-center mt-6">
+        <button id="btn-load-more-photos" class="px-6 py-2.5 rounded-full border border-gold/40 text-stone-700 bg-white/80 hover:bg-gold/10 text-xs font-semibold tracking-wider transition shadow-sm inline-flex items-center gap-2">
+          <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          <span id="load-more-text">Lihat Foto Lainnya</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== 9. RSVP & BUKU TAMU INTERAKTIF ==================== -->
+    <section class="py-16 px-6 bg-[#faf6ee]">
+      <div class="text-center mb-10 reveal-on-scroll">
+        <p class="font-cinzel text-xs uppercase tracking-widest text-gold font-semibold">Konfirmasi Kehadiran</p>
+        <h2 class="font-cinzel text-3xl font-bold text-stone-800 mt-1">RSVP &amp; Doa Restu</h2>
+        <div class="gold-divider"></div>
+        <p class="text-xs text-stone-500 max-w-sm mx-auto">
+          Merupakan suatu kehormatan dan sukacita bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
+        </p>
+      </div>
+
+      <!-- Form RSVP -->
+      <div class="glass-card p-6 md:p-8 rounded-3xl border border-gold/30 shadow-md reveal-on-scroll mb-10">
+        <form id="rsvp-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
+            <input type="text" id="rsvp-name" required placeholder="Contoh: Daniel &amp; Keluarga" class="w-full px-4 py-3 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-gold/50 bg-white/90 text-sm">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">Konfirmasi Kehadiran</label>
+            <select id="rsvp-status" class="w-full px-4 py-3 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-gold/50 bg-white/90 text-sm">
+              <option value="Hadir">Ya, Saya Akan Hadir</option>
+              <option value="Berhalangan">Maaf, Saya Berhalangan Hadir</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">Ucapan &amp; Doa Restu</label>
+            <textarea id="rsvp-message" rows="3" required placeholder="Tuliskan pesan sukacita atau doa berkat Anda untuk mempelai..." class="w-full px-4 py-3 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-gold/50 bg-white/90 text-sm"></textarea>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 bg-stone-800 text-white rounded-xl font-medium tracking-wide text-sm hover:bg-stone-900 transition flex items-center justify-center gap-2 shadow-md">
+            <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+            <span>Kirim Konfirmasi &amp; Doa</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Guestbook Feed -->
+      <div class="reveal-on-scroll">
+        <h4 class="font-cinzel text-base font-bold text-stone-800 mb-3 flex items-center gap-2">
+          <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+          <span>Doa Restu dari Sahabat &amp; Keluarga</span>
+        </h4>
+        <div id="wishes-list" class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+          <!-- Populated by main.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 10. WEDDING GIFT / TANDA KASIH ==================== -->
+    <section class="py-16 px-6">
+      <div class="text-center mb-10 reveal-on-scroll">
+        <p class="font-cinzel text-xs uppercase tracking-widest text-gold font-semibold">Tanda Kasih Digital</p>
+        <h2 class="font-cinzel text-3xl font-bold text-stone-800 mt-1">Wedding Gift</h2>
+        <div class="gold-divider"></div>
+        <p class="text-xs text-stone-500 max-w-sm mx-auto">
+          Doa restu Anda adalah karunia terindah bagi kami. Namun jika Anda bermaksud memberikan tanda kasih, Anda dapat mengirimkannya melalui:
+        </p>
+      </div>
+
+      <div class="space-y-4 max-w-md mx-auto reveal-on-scroll">
+        <!-- Rekening 1: BCA Kevin -->
+        <div class="glass-card p-6 rounded-2xl border border-gold/30 shadow-sm relative overflow-hidden text-left">
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-bold text-lg tracking-wider text-blue-800 font-cinzel">BCA</span>
+            <span class="text-xs px-2.5 py-1 bg-stone-100 rounded-md font-mono text-stone-600">Bank Central Asia</span>
+          </div>
+          <p class="text-xs text-stone-400 uppercase tracking-wider mb-1">Nomor Rekening</p>
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-xl font-bold text-stone-800">5420 8891 23</span>
+            <button class="btn-copy-account px-3 py-1.5 bg-gold/15 text-gold-dark hover:bg-gold/25 text-xs font-semibold rounded-lg transition flex items-center gap-1" data-account="5420889123">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              <span>Salin</span>
+            </button>
+          </div>
+          <p class="text-xs text-stone-500 mt-2 font-medium">a.n. Kevin Pratama</p>
+        </div>
+
+        <!-- Rekening 2: Mandiri Isabela -->
+        <div class="glass-card p-6 rounded-2xl border border-gold/30 shadow-sm relative overflow-hidden text-left">
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-bold text-lg tracking-wider text-amber-700 font-cinzel">MANDIRI</span>
+            <span class="text-xs px-2.5 py-1 bg-stone-100 rounded-md font-mono text-stone-600">Bank Mandiri</span>
+          </div>
+          <p class="text-xs text-stone-400 uppercase tracking-wider mb-1">Nomor Rekening</p>
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-xl font-bold text-stone-800">1370 0123 9982</span>
+            <button class="btn-copy-account px-3 py-1.5 bg-gold/15 text-gold-dark hover:bg-gold/25 text-xs font-semibold rounded-lg transition flex items-center gap-1" data-account="137001239982">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              <span>Salin</span>
+            </button>
+          </div>
+          <p class="text-xs text-stone-500 mt-2 font-medium">a.n. Isabela Natasha</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 11. CLOSING & UCAPAN SYUKUR ==================== -->
+    <section class="py-20 px-6 text-center bg-gradient-to-t from-[#f5ede0] to-[#fffefb] relative overflow-hidden">
+      <div class="reveal-on-scroll max-w-md mx-auto">
+        <div class="flex justify-center mb-4">
+          <svg class="w-7 h-7 text-gold" viewBox="0 0 24 24" fill="currentColor"><path d="M11 2h2v6h6v2h-6v12h-2V10H5V8h6V2z"/></svg>
+        </div>
+        <p class="text-xs uppercase tracking-widest text-gold-dark font-semibold">Ungkapan Terima Kasih</p>
+        <p class="text-stone-600 text-sm leading-relaxed my-4">
+          Merupakan suatu kehormatan dan kebahagiaan yang tak terhingga bagi kami sekeluarga apabila Bapak/Ibu/Saudara/i berkenan hadir serta memberikan doa restu bagi langkah baru kami.
+        </p>
+        <p class="font-playfair italic text-stone-700 mb-6">
+          &ldquo;Demikianlah mereka bukan lagi dua, melainkan satu. Karena itu, apa yang telah dipersatukan Allah, tidak boleh diceraikan manusia.&rdquo; <br>
+          <span class="text-xs font-cinzel font-semibold not-italic text-gold-dark">— Matius 19:6 —</span>
+        </p>
+
+        <p class="text-xs text-stone-500 mb-1">Kami yang berbahagia,</p>
+        <h3 class="font-cinzel text-3xl font-bold text-stone-800">Kevin &amp; Isabela</h3>
+        <p class="text-xs text-stone-400 mt-1">Beserta Keluarga Besar Kedua Mempelai</p>
+      </div>
+
+      <!-- Footer credit -->
+      <footer class="mt-16 pt-6 border-t border-stone-300/50 text-center">
+        <p class="text-[11px] text-stone-400 tracking-wider">With Love &bull; Kevin &amp; Isabela Wedding Celebration &bull; 2026</p>
+      </footer>
+    </section>
+  </main>
+
+  <!-- ==================== PHOTO LIGHTBOX MODAL ==================== -->
+  <div id="gallery-modal">
+    <div class="relative max-w-2xl w-full p-2">
+      <button id="modal-close-btn" class="absolute -top-10 right-2 text-white/90 hover:text-white transition">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+      <img id="modal-image" src="" alt="Prewedding Fullscreen" class="w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl border border-white/20">
+    </div>
+  </div>
+
+  <!-- ==================== MODAL EDIT DOA ==================== -->
+  <div id="edit-wish-modal" class="fixed inset-0 bg-stone-900/80 backdrop-blur-sm z-[70] hidden items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full p-6 md:p-8 rounded-3xl border border-gold/40 shadow-2xl relative">
+      <div class="flex items-center justify-between mb-4 border-b border-gold/20 pb-3">
+        <h3 class="font-cinzel font-bold text-lg text-stone-800 flex items-center gap-2">
+          <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+          <span>Edit Ucapan &amp; Doa</span>
+        </h3>
+        <button id="close-edit-modal" class="text-stone-400 hover:text-stone-700 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      
+      <form id="edit-wish-form" class="space-y-4">
+        <input type="hidden" id="edit-wish-id">
+        <div>
+          <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1">Nama</label>
+          <input type="text" id="edit-wish-name" required class="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-gold/50 text-sm bg-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1">Kehadiran</label>
+          <select id="edit-wish-status" class="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-gold/50 text-sm bg-white">
+            <option value="Hadir">Hadir</option>
+            <option value="Berhalangan">Berhalangan</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1">Pesan / Doa Restu</label>
+          <textarea id="edit-wish-message" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:ring-2 focus:ring-gold/50 text-sm bg-white"></textarea>
+        </div>
+        <div class="flex gap-2 justify-end pt-2">
+          <button type="button" id="cancel-edit-btn" class="px-4 py-2 rounded-xl text-xs font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 transition">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl text-xs font-semibold text-white bg-gold-dark hover:bg-gold transition shadow-sm">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-notification"></div>
+
+  <!-- Main JavaScript File -->
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

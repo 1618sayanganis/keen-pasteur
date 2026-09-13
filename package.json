@@ -1,0 +1,12 @@
+{
+  "name": "wedding-kevin-isabela",
+  "version": "1.0.0",
+  "description": "Website Undangan Pernikahan Kristen Kevin & Isabela dengan CRUD JSON storage",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["wedding", "invitation", "crud", "json"],
+  "author": "Antigravity",
+  "license": "ISC"
+}
