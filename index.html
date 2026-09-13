@@ -67,20 +67,26 @@
 
   <!-- ==================== 1. COVER / ENVELOPE MODAL OVERLAY ==================== -->
   <div id="cover-overlay" class="p-6">
-    <div class="max-w-md w-full glass-card p-8 md:p-10 text-center relative border-2 border-gold/40 shadow-2xl rounded-3xl overflow-hidden">
+    <div class="max-w-md w-full glass-card p-8 md:p-10 text-center relative border-2 border-gold/40 shadow-2xl rounded-3xl overflow-hidden anim-drop">
       <!-- Cross Icon Decoration -->
-      <div class="flex justify-center mb-3">
+      <div class="flex justify-center mb-3 anim-drop anim-delay-1">
         <svg class="w-8 h-8 text-gold drop-shadow-sm" viewBox="0 0 24 24" fill="currentColor">
           <path d="M11 2h2v6h6v2h-6v12h-2V10H5V8h6V2z"/>
         </svg>
       </div>
 
-      <p class="font-cinzel tracking-[0.25em] text-xs uppercase text-gold font-semibold mb-2">The Holy Matrimony</p>
-      <h1 class="font-cinzel text-3xl md:text-4xl font-bold tracking-wider text-stone-800 mb-1">Kevin &amp; Isabela</h1>
-      <p class="font-script text-3xl text-gold-dark mb-6">We are getting married!</p>
+      <p class="font-cinzel tracking-[0.25em] text-xs uppercase text-gold font-semibold mb-2 anim-drop anim-delay-2">The Holy Matrimony</p>
+      <h1 class="font-cinzel text-3xl md:text-4xl font-bold tracking-wider text-stone-800 mb-1 anim-drop anim-delay-3">Kevin &amp; Isabela</h1>
+      
+      <!-- Typewriter Animated Text -->
+      <div class="mb-6 h-10 flex items-center justify-center">
+        <p class="font-script text-3xl text-gold-dark inline-flex items-center">
+          <span id="typewriter-text" class="typing-text"></span><span id="typewriter-cursor" class="typing-cursor"></span>
+        </p>
+      </div>
 
       <!-- Envelope / Wax Seal Centerpiece -->
-      <div class="my-8 flex flex-col items-center justify-center">
+      <div class="my-8 flex flex-col items-center justify-center anim-drop anim-delay-4">
         <div class="wax-seal" title="Klik untuk membuka">
           <span class="font-cinzel text-xl font-bold tracking-tighter">K&amp;I</span>
         </div>
@@ -88,13 +94,13 @@
       </div>
 
       <!-- Guest Personalization -->
-      <div class="bg-stone-50/80 rounded-2xl p-4 border border-stone-200/60 mb-6">
+      <div class="bg-stone-50/80 rounded-2xl p-4 border border-stone-200/60 mb-6 anim-drop anim-delay-5">
         <p class="text-xs text-stone-500 uppercase tracking-widest mb-1">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
         <h3 id="guest-recipient-name" class="font-playfair font-bold text-xl text-stone-800">Tamu Undangan Terhormat</h3>
         <p class="text-[11px] text-stone-400 mt-1 italic">*Mohon maaf bila ada kesalahan penulisan nama/gelar</p>
       </div>
 
-      <button id="btn-open-invitation" class="w-full py-3.5 px-6 bg-gradient-to-r from-gold to-gold-dark text-white rounded-full font-medium tracking-wide shadow-lg shadow-gold/25 hover:shadow-gold/40 transform hover:-translate-y-0.5 active:translate-y-0 transition duration-300 flex items-center justify-center gap-2">
+      <button id="btn-open-invitation" class="w-full py-3.5 px-6 bg-gradient-to-r from-gold to-gold-dark text-white rounded-full font-medium tracking-wide shadow-lg shadow-gold/25 hover:shadow-gold/40 transform hover:-translate-y-0.5 active:translate-y-0 transition duration-300 flex items-center justify-center gap-2 anim-drop anim-delay-6">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
         </svg>

@@ -6,6 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initGuestName();
   initCoverEnvelope();
+  initTypewriterAnimation();
   initBackgroundMusic();
   initPetalsCanvas();
   initScrollBackground();
@@ -64,6 +65,34 @@ function initCoverEnvelope() {
   if (coverOverlay && !coverOverlay.classList.contains('opened')) {
     document.body.style.overflow = 'hidden';
   }
+}
+
+// 2b. Typewriter Animation untuk "We are getting married!"
+function initTypewriterAnimation() {
+  const targetText = "We are getting married!";
+  const textEl = document.getElementById('typewriter-text');
+  const cursorEl = document.getElementById('typewriter-cursor');
+
+  if (!textEl) return;
+
+  textEl.textContent = "";
+  let charIndex = 0;
+
+  // Mulai mengetik setelah elemen judul nama mempelai drop in (sekitar 0.75s)
+  setTimeout(() => {
+    const typeInterval = setInterval(() => {
+      if (charIndex < targetText.length) {
+        textEl.textContent += targetText.charAt(charIndex);
+        charIndex++;
+      } else {
+        clearInterval(typeInterval);
+        // Biarkan cursor berkedip sebentar lalu hilang halus
+        setTimeout(() => {
+          if (cursorEl) cursorEl.classList.add('finished');
+        }, 1500);
+      }
+    }, 65);
+  }, 750);
 }
 
 // 3. Background Music Control
