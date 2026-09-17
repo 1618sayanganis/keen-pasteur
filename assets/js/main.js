@@ -227,8 +227,8 @@ function initPetalsCanvas() {
 
 // 5. Dynamic Countdown Timer
 function initCountdownTimer() {
-  // Target: 24 October 2026 09:00:00 WIB
-  const targetDate = new Date('2026-10-24T09:00:00+07:00').getTime();
+  // Target: 10 October 2026 11:00:00 WITA (UTC+8)
+  const targetDate = new Date('2026-10-10T11:00:00+08:00').getTime();
 
   const daysEl = document.getElementById('count-days');
   const hoursEl = document.getElementById('count-hours');
