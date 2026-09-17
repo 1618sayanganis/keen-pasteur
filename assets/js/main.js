@@ -332,19 +332,19 @@ function initGuestbook() {
     {
       name: "Pdt. Markus & Keluarga",
       status: "Hadir",
-      message: "Selamat menempuh hidup baru Kevin & Isabela. Kiranya kasih Kristus senantiasa menjadi fondasi yang kokoh dalam bahtera rumah tangga kalian. Tuhan memberkati berlimpah-limpah!",
+      message: "Selamat menempuh hidup baru Suyono & Corry. Kiranya kasih Kristus senantiasa menjadi fondasi yang kokoh dalam bahtera rumah tangga kalian. Tuhan memberkati berlimpah-limpah!",
       time: "Kemarin, 19:40"
     },
     {
       name: "David Christian & Partner",
       status: "Hadir",
-      message: "Happy wedding bro Kevin & Isabela! Sangat bersukacita melihat perjalanan kalian dari awal sampai di pelaminan. Langgeng sampai maut memisahkan ya!",
+      message: "Happy wedding Suyono & Corry! Sangat bersukacita melihat perjalanan kalian berdua sampai di pelaminan. Langgeng sampai maut memisahkan ya!",
       time: "2 hari lalu"
     },
     {
       name: "Priscillia & Family",
       status: "Hadir",
-      message: "Congratulation Bela & Kevin! Semoga damai sejahtera dan sukacita sorgawi selalu menyertai keluarga baru kalian. Can't wait for your big day!",
+      message: "Congratulation Corry & Suyono! Semoga damai sejahtera dan sukacita sorgawi selalu menyertai keluarga baru kalian. Can't wait for your big day!",
       time: "3 hari lalu"
     }
   ];
@@ -359,7 +359,7 @@ function initGuestbook() {
       if (res.ok) {
         const data = await res.json();
         cachedWishes = data;
-        localStorage.setItem('wedding_kevin_isabela_wishes', JSON.stringify(data));
+        localStorage.setItem('wedding_suyono_corry_wishes', JSON.stringify(data));
         renderWishes(cachedWishes);
         return;
       }
@@ -378,7 +378,7 @@ function initGuestbook() {
       }
     } catch (e) {}
 
-    const stored = localStorage.getItem('wedding_kevin_isabela_wishes');
+    const stored = localStorage.getItem('wedding_suyono_corry_wishes');
     cachedWishes = stored ? JSON.parse(stored) : defaultWishes;
     renderWishes(cachedWishes);
   }
@@ -472,7 +472,7 @@ function initGuestbook() {
         createdAt: new Date().toISOString()
       };
       cachedWishes.unshift(localNewWish);
-      localStorage.setItem('wedding_kevin_isabela_wishes', JSON.stringify(cachedWishes));
+      localStorage.setItem('wedding_suyono_corry_wishes', JSON.stringify(cachedWishes));
       renderWishes(cachedWishes);
       rsvpForm.reset();
       showToast('Puji Tuhan, konfirmasi & doa restu Anda berhasil dikirim!');
@@ -539,7 +539,7 @@ function initGuestbook() {
         cachedWishes[idx].status = status;
         cachedWishes[idx].message = message;
         cachedWishes[idx].updatedAt = new Date().toISOString();
-        localStorage.setItem('wedding_kevin_isabela_wishes', JSON.stringify(cachedWishes));
+        localStorage.setItem('wedding_suyono_corry_wishes', JSON.stringify(cachedWishes));
         renderWishes(cachedWishes);
       }
       closeEditModal();
@@ -590,7 +590,7 @@ function initGuestbook() {
 
         // Local fallback
         cachedWishes = cachedWishes.filter(w => w.id !== id);
-        localStorage.setItem('wedding_kevin_isabela_wishes', JSON.stringify(cachedWishes));
+        localStorage.setItem('wedding_suyono_corry_wishes', JSON.stringify(cachedWishes));
         renderWishes(cachedWishes);
         showToast('Ucapan doa berhasil dihapus.');
       }
