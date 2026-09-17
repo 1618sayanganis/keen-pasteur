@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initTypewriterAnimation();
   initBackgroundMusic();
   initPetalsCanvas();
-  initScrollBackground();
   initCountdownTimer();
   initScrollAnimations();
   initGuestbook();
@@ -902,107 +901,4 @@ function initLoadMorePhotos() {
   });
 }
 
-// 10. Scroll-driven Canvas Motion Background (Mulai dari Section Firman Tuhan)
-function initScrollBackground() {
-  const canvas = document.getElementById('scroll-bg-canvas');
-  const container = document.getElementById('scroll-bg-container');
-  const triggerSection = document.getElementById('section-firman-tuhan');
 
-  if (!canvas || !container || !triggerSection) return;
-
-  const ctx = canvas.getContext('2d');
-  const totalFrames = 50;
-  const frames = [];
-  let currentFrameIndex = 0;
-  let isLoaded = false;
-  let loadedCount = 0;
-
-  // Set proper canvas pixel ratio
-  function resizeCanvas() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    renderFrame(currentFrameIndex);
-  }
-
-  window.addEventListener('resize', resizeCanvas);
-
-  // Preload frames (prioritaskan WebP yang ringan ~2.4MB total, fallback ke PNG)
-  for (let i = 1; i <= totalFrames; i++) {
-    const img = new Image();
-    const numStr = String(i).padStart(3, '0');
-    img.src = `assets/bg_opt/ezgif-frame-${numStr}.webp`;
-    img.onload = () => {
-      loadedCount++;
-      if (loadedCount === 1) {
-        renderFrame(0);
-      }
-      if (loadedCount >= totalFrames) {
-        isLoaded = true;
-      }
-    };
-    img.onerror = () => {
-      // Fallback to original PNG if WebP fails
-      img.src = `assets/bg/ezgif-frame-${numStr}.png`;
-    };
-    frames.push(img);
-  }
-
-  // Draw image to canvas cover-style
-  function renderFrame(index) {
-    const img = frames[index];
-    if (!img || !img.complete || img.naturalWidth === 0) return;
-
-    const cw = canvas.width;
-    const ch = canvas.height;
-    ctx.clearRect(0, 0, cw, ch);
-
-    const iw = img.naturalWidth;
-    const ih = img.naturalHeight;
-    const scale = Math.max(cw / iw, ch / ih);
-    const nw = iw * scale;
-    const nh = ih * scale;
-    const ox = (cw - nw) / 2;
-    const oy = (ch - nh) / 2;
-
-    ctx.drawImage(img, ox, oy, nw, nh);
-  }
-
-  // Calculate scroll position relative to triggerSection
-  function onScrollUpdate() {
-    const sectionRect = triggerSection.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const docHeight = document.documentElement.scrollHeight;
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-
-    // Trigger section top relative to document
-    const sectionTopDoc = triggerSection.offsetTop;
-
-    // Mulai tampilkan background saat section Firman Tuhan mendekati viewport
-    if (sectionRect.top <= viewportHeight * 0.85) {
-      container.style.opacity = '1';
-    } else {
-      container.style.opacity = '0';
-    }
-
-    // Hitung progress scroll dari Firman Tuhan sampai bawah halaman
-    const scrollStart = sectionTopDoc - (viewportHeight * 0.5);
-    const scrollEnd = docHeight - viewportHeight;
-    const scrollDistance = Math.max(1, scrollEnd - scrollStart);
-
-    let progress = (scrollTop - scrollStart) / scrollDistance;
-    progress = Math.max(0, Math.min(1, progress));
-
-    // Map progress 0..1 ke index frame 0..(totalFrames - 1)
-    const targetIndex = Math.min(totalFrames - 1, Math.floor(progress * (totalFrames - 1)));
-
-    if (targetIndex !== currentFrameIndex) {
-      currentFrameIndex = targetIndex;
-      requestAnimationFrame(() => renderFrame(currentFrameIndex));
-    }
-  }
-
-  window.addEventListener('scroll', onScrollUpdate, { passive: true });
-  resizeCanvas();
-  onScrollUpdate();
-}
